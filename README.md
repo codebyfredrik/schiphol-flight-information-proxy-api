@@ -1,14 +1,14 @@
 # Schipol Flight Information Proxy API
 
-## Summary
+### Summary
 
 TEXT
 
-## Implementation details
+### Implementation details
 
 TEXT
 
-## Technologies used
+### Technologies used
 
 - JavaScript ES6+
 - Express JS
