@@ -1,4 +1,4 @@
-const dataFetchConfig = {
+export const dataFetchConfig = {
   headers: {
     'content-type': 'application/json',
     Accept: 'application/json',
@@ -7,5 +7,3 @@ const dataFetchConfig = {
     app_key: process.env.API_KEY,
   },
 };
-
-module.exports = dataFetchConfig;
