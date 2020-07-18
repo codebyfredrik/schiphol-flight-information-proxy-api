@@ -1,33 +1,18 @@
 import express from 'express';
 import cors from 'cors';
-// const dotenv = require('dotenv').config();
-// import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import morgan from 'morgan';
-const app = express();
-// const config = require('./config/dataFetchConfig');
-// import config from './config/dataFetchConfig';
-const port = process.env.PORT || 3001;
+import { dataFetchConfig as config } from './config/dataFetchConfig';
 
-// dotenv.config();
+const app = express();
+const port = process.env.PORT || 3001;
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
-  // require('dotenv').config();
+  dotenv.config();
 }
-
-const config = {
-  headers: {
-    'content-type': 'application/json',
-    Accept: 'application/json',
-    ResourceVersion: 'v4',
-    app_id: process.env.API_ID,
-    app_key: process.env.API_KEY,
-  },
-};
-
-console.log(config);
 
 const options = {
   origin: '*',
@@ -58,7 +43,6 @@ app.get('/flights', async (req, res) => {
     const { data } = await axios.get(url, config);
     res.status(200).json(data);
   } catch (e) {
-    // console.log(e);
     res.status(500).json({
       error: e.errors,
     });

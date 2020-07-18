@@ -1,4 +1,7 @@
-const dataFetchConfig = {
+import dotenv from 'dotenv';
+dotenv.config();
+
+export const dataFetchConfig = {
   headers: {
     'content-type': 'application/json',
     Accept: 'application/json',
@@ -7,5 +10,3 @@ const dataFetchConfig = {
     app_key: process.env.API_KEY,
   },
 };
-
-export default dataFetchConfig;
