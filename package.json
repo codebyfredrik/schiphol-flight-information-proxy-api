@@ -6,7 +6,7 @@
     "start": "babel-node server.js",
     "dev": "nodemon -r dotenv/config --exec babel-node server.js "
   },
-  "author": "",
+  "author": "Fredrik Tibbling",
   "license": "ISC",
   "dependencies": {
     "@babel/core": "^7.10.5",
