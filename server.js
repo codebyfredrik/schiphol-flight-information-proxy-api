@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+const dotenv = require('dotenv').config();
+// import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import morgan from 'morgan';
@@ -8,7 +9,7 @@ const app = express();
 const config = require('./config/dataFetchConfig');
 const port = process.env.PORT || 3001;
 
-dotenv.config();
+// dotenv.config();
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -43,6 +44,7 @@ app.get('/flights', async (req, res) => {
     const { data } = await axios.get(url, config);
     res.status(200).json(data);
   } catch (e) {
+    // console.log(e);
     res.status(500).json({
       error: e.errors,
     });
@@ -74,7 +76,11 @@ app.get('/destinations/:id', async (req, res) => {
       config
     );
     res.status(200).json(data);
-  } catch (e) {}
+  } catch (e) {
+    res.status(500).json({
+      error: e.errors,
+    });
+  }
 });
 
 app.listen(port, () => console.log(`http://localhost:${port}`));

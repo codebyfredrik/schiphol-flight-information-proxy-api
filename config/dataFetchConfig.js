@@ -8,4 +8,4 @@ const dataFetchConfig = {
   },
 };
 
-export default dataFetchConfig;
+module.exports = dataFetchConfig;
