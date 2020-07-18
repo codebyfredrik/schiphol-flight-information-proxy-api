@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 import morgan from 'morgan';
@@ -11,7 +10,6 @@ const port = process.env.PORT || 3001;
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
-  dotenv.config();
 }
 
 const options = {
