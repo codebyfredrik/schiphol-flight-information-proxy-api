@@ -1,33 +1,80 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import cors from 'cors'
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import axios from 'axios';
+import morgan from 'morgan';
+const app = express();
+const config = require('./config/dataFetchConfig');
+const port = process.env.PORT || 3001;
 
-// If you're using one of our datasets, uncomment the appropriate import below
-// to get started!
-// 
-// import goldenGlobesData from './data/golden-globes.json'
-// import avocadoSalesData from './data/avocado-sales.json'
-// import booksData from './data/books.json'
-// import netflixData from './data/netflix-titles.json'
-// import topMusicData from './data/top-music.json'
+dotenv.config();
 
-// Defines the port the app will run on. Defaults to 8080, but can be 
-// overridden when starting the server. For example:
-//
-//   PORT=9000 npm start
-const port = process.env.PORT || 8080
-const app = express()
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
-// Add middlewares to enable cors and json body parsing
-app.use(cors())
-app.use(bodyParser.json())
+const options = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
-// Start defining your routes here
-app.get('/', (req, res) => {
-  res.send('Hello world')
-})
+app.use(cors(options));
+app.use(bodyParser.json());
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`)
-})
+app.get('/flights', async (req, res) => {
+  const {
+    fromDateTime,
+    page,
+    searchDateTimeField,
+    sort,
+    flightDirection = '',
+  } = req.query;
+  let url;
+
+  try {
+    if (flightDirection) {
+      url = `${process.env.API_BASE_URL}/flights?flightDirection=${flightDirection}&fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
+    } else {
+      url = `${process.env.API_BASE_URL}/flights?fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
+    }
+    const { data } = await axios.get(url, config);
+    res.status(200).json(data);
+  } catch (e) {
+    res.status(500).json({
+      error: e.errors,
+    });
+  }
+});
+
+app.get('/airlines/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.API_BASE_URL}/airlines/${id}`,
+      config
+    );
+    res.status(200).json(data);
+  } catch (e) {
+    res.status(500).json({
+      error: e.errors,
+    });
+  }
+});
+
+app.get('/destinations/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { data } = await axios.get(
+      `${process.env.API_BASE_URL}/destinations/${id}`,
+      config
+    );
+    res.status(200).json(data);
+  } catch (e) {}
+});
+
+app.listen(port, () => console.log(`http://localhost:${port}`));
