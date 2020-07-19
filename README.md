@@ -2,11 +2,7 @@
 
 ### Summary
 
-TEXT
-
-### Implementation details
-
-TEXT
+A Proxy API to manage Cross-Origin Resource Sharing (CORS) between the Schipol API and the frontend.
 
 ### Technologies used
 
