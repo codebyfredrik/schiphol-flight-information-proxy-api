@@ -2,7 +2,7 @@
 
 ### Summary
 
-A Proxy API to manage Cross-Origin Resource Sharing (CORS) between the Schipol API and the frontend.
+A Proxy API to manage Cross-Origin Resource Sharing (CORS) between the Schipol API and the [frontend](https://github.com/codebyfredrik/schiphol-flight-information-react-query).
 
 ### Technologies used
 
