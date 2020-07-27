@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+  // app.use(morgan('dev'));
 }
 
 const options = {
@@ -21,6 +21,23 @@ const options = {
 
 app.use(cors(options));
 app.use(bodyParser.json());
+
+axios.interceptors.response.use(
+  (response) => {
+    // let lastPage;
+    console.log(response.config.parse);
+    if (response.config.parse) {
+      console.log(response.config);
+      // lastPage = response.headers.link.split(',');
+      // console.log(lastPage);
+    }
+    console.log(response);
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error.message);
+  }
+);
 
 app.get('/flights', async (req, res) => {
   const {
@@ -38,7 +55,8 @@ app.get('/flights', async (req, res) => {
     } else {
       url = `${process.env.API_BASE_URL}/flights?fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
     }
-    const { data } = await axios.get(url, config);
+    const { data } = await axios.get(url, { ...config, parse: true });
+    if (data) console.log(data);
     res.status(200).json(data);
   } catch (e) {
     res.status(500).json({
