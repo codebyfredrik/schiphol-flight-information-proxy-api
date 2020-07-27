@@ -46,7 +46,7 @@ app.get('/flights', async (req, res) => {
       console.log('lastPage: ', lastPage);
     }
 
-    res.status(200).json(data);
+    res.status(200).json({ data, lastPage });
   } catch (e) {
     res.status(500).json({
       error: e.errors,

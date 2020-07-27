@@ -7,25 +7,22 @@ axios.defaults.headers = { ...config };
 
 axios.interceptors.response.use(
   (response) => {
-    // console.log(typeof response.config.parse);
-    let hasMore, temp, finalItem, last;
+    let links, result, lastApiPage;
     if (response.config.parse) {
       return new Promise((resolve, reject) => {
-        // console.log(response.headers.link);
-        temp = response.headers.link;
-        hasMore = temp.split('<https');
-        // console.log(hasMore);
-        finalItem = hasMore.filter((item) => {
-          return item.includes('last');
+        links = response.headers.link.split('<https');
+        lastApiPage = links.filter((link) => {
+          return link.includes('last');
         });
-        console.log(finalItem);
+
+        console.log(lastApiPage);
+
         const regexp = /(?<=page=)\d+(?=.*rel="last")/;
-        last = regexp.exec(finalItem);
-        if (last[0] === null) {
-          reject('error');
-        }
-        console.log(last[0]);
-        response.lastPage = last[0];
+        result = regexp.exec(lastApiPage);
+
+        console.log(result[0]);
+
+        response.lastPage = result[0];
         resolve(response);
       });
     }
