@@ -1,15 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import axios from 'axios';
 import morgan from 'morgan';
-import { dataFetchConfig as config } from './config/dataFetchConfig';
+import axios from './helpers/axios';
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 if (process.env.NODE_ENV === 'development') {
-  // app.use(morgan('dev'));
+  app.use(morgan('dev'));
 }
 
 const options = {
@@ -21,23 +20,6 @@ const options = {
 
 app.use(cors(options));
 app.use(bodyParser.json());
-
-axios.interceptors.response.use(
-  (response) => {
-    // let lastPage;
-    console.log(response.config.parse);
-    if (response.config.parse) {
-      console.log(response.config);
-      // lastPage = response.headers.link.split(',');
-      // console.log(lastPage);
-    }
-    console.log(response);
-    return response;
-  },
-  (error) => {
-    return Promise.reject(error.message);
-  }
-);
 
 app.get('/flights', async (req, res) => {
   const {
@@ -51,12 +33,19 @@ app.get('/flights', async (req, res) => {
 
   try {
     if (flightDirection) {
-      url = `${process.env.API_BASE_URL}/flights?flightDirection=${flightDirection}&fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
+      url = `/flights?flightDirection=${flightDirection}&fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
     } else {
-      url = `${process.env.API_BASE_URL}/flights?fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
+      url = `/flights?fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
     }
-    const { data } = await axios.get(url, { ...config, parse: true });
-    if (data) console.log(data);
+    const { data, lastPage } = await axios.get(url, {
+      ...axios.default,
+      parse: true,
+    });
+    if (data) {
+      // console.log(data);
+      console.log('lastPage: ', lastPage);
+    }
+
     res.status(200).json(data);
   } catch (e) {
     res.status(500).json({
@@ -69,10 +58,7 @@ app.get('/airlines/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data } = await axios.get(
-      `${process.env.API_BASE_URL}/airlines/${id}`,
-      config
-    );
+    const { data } = await axios.get(`/airlines/${id}`);
     res.status(200).json(data);
   } catch (e) {
     res.status(500).json({
@@ -85,10 +71,7 @@ app.get('/destinations/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data } = await axios.get(
-      `${process.env.API_BASE_URL}/destinations/${id}`,
-      config
-    );
+    const { data } = await axios.get(`/destinations/${id}`);
     res.status(200).json(data);
   } catch (e) {
     res.status(500).json({
