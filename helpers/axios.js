@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { dataFetchConfig as config } from './../config/dataFetchConfig';
+import { dataFetchHeaderConfig as config } from '../config/dataFetchHeaderConfig';
 
 axios.defaults.baseURL = process.env.API_BASE_URL;
 
@@ -26,7 +26,7 @@ axios.interceptors.response.use(
         resolve(response);
       });
     }
-    // console.log(response);
+
     return response;
   },
   (error) => {

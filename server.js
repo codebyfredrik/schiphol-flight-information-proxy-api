@@ -42,7 +42,6 @@ app.get('/flights', async (req, res) => {
       parse: true,
     });
     if (data) {
-      // console.log(data);
       console.log('lastPage: ', lastPage);
     }
 
