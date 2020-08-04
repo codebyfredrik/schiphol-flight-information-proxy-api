@@ -79,6 +79,19 @@ app.get('/destinations/:id', async (req, res) => {
   }
 });
 
+app.get('/flights/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const { data } = await axios.get(`/flights/${id}`);
+    res.status(200).json(data);
+  } catch (e) {
+    res.status(500).json({
+      error: e.errors,
+    });
+  }
+});
+
 app.listen(port, () =>
   console.log(`Server running on http://localhost:${port}`)
 );
