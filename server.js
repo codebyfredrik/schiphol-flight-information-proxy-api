@@ -92,6 +92,19 @@ app.get('/flights/:id', async (req, res) => {
   }
 });
 
+app.get('/aircrafttypes', async (req, res) => {
+  const { iataSub } = req.query;
+
+  try {
+    const { data } = await axios.get(`/aircrafttypes?iataSub=${iataSub}`);
+    res.status(200).json(data);
+  } catch (e) {
+    res.status(500).json({
+      error: e.errors,
+    });
+  }
+});
+
 app.listen(port, () =>
   console.log(`Server running on http://localhost:${port}`)
 );
