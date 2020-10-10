@@ -41,8 +41,9 @@ app.get('/flights', async (req, res) => {
       ...axios.default,
       parse: true,
     });
+
     if (data) {
-      console.log('lastPage: ', lastPage);
+      // console.log('lastPage: ', lastPage);
     }
 
     res.status(200).json({ data, lastPage });

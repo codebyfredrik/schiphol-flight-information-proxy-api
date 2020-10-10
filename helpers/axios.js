@@ -7,7 +7,10 @@ axios.defaults.headers = { ...config };
 
 axios.interceptors.response.use(
   (response) => {
-    let links, result, lastApiPage;
+    let links;
+    let result;
+    let lastApiPage;
+
     if (response.config.parse) {
       return new Promise((resolve, reject) => {
         links = response.headers.link.split('<https');
@@ -15,12 +18,13 @@ axios.interceptors.response.use(
           return link.includes('last');
         });
 
-        console.log(lastApiPage);
+        // Logging for troubleshoto
+        // console.log(lastApiPage);
 
         const regexp = /(?<=page=)\d+(?=.*rel="last")/;
         result = regexp.exec(lastApiPage);
 
-        console.log(result[0]);
+        // console.log(result[0]);
 
         response.lastPage = result[0];
         resolve(response);
