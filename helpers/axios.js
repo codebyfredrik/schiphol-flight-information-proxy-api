@@ -13,17 +13,21 @@ axios.interceptors.response.use(
 
     if (response.config.parse) {
       return new Promise((resolve, reject) => {
+        // Logging for demo
+        // console.log(response.headers.link);
+
         links = response.headers.link.split('<https');
         lastApiPage = links.filter((link) => {
           return link.includes('last');
         });
 
-        // Logging for troubleshoto
+        // Logging for demo
         // console.log(lastApiPage);
 
         const regexp = /(?<=page=)\d+(?=.*rel="last")/;
         result = regexp.exec(lastApiPage);
 
+        // Logging for demo
         // console.log(result[0]);
 
         response.lastPage = result[0];
