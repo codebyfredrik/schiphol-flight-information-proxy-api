@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import axios from './helpers/axios';
+import { catchAsync } from './helpers/catchAsync';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -21,85 +22,67 @@ const options = {
 app.use(cors(options));
 app.use(bodyParser.json());
 
-app.get('/flights', async (req, res) => {
-  const {
-    fromDateTime,
-    page,
-    searchDateTimeField,
-    sort,
-    flightDirection = '',
-  } = req.query;
-  let url;
+app.get(
+  '/flights',
+  catchAsync(async (req, res) => {
+    const {
+      fromDateTime,
+      page,
+      searchDateTimeField,
+      sort,
+      flightDirection = '',
+    } = req.query;
+    let url;
 
-  try {
-    if (flightDirection) {
+    if (flightDirection === 'A' || flightDirection === 'D') {
       url = `/flights?flightDirection=${flightDirection}&fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
     } else {
       url = `/flights?fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
     }
+
     const { data, lastPage } = await axios.get(url, {
       parse: true,
     });
 
     res.status(200).json({ data, lastPage });
-  } catch (e) {
-    res.status(500).json({
-      error: e.errors,
-    });
-  }
-});
+  })
+);
 
-app.get('/airlines/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
+app.get(
+  '/airlines/:id',
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
     const { data } = await axios.get(`/airlines/${id}`);
     res.status(200).json(data);
-  } catch (e) {
-    res.status(500).json({
-      error: e.errors,
-    });
-  }
-});
+  })
+);
 
-app.get('/destinations/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
+app.get(
+  '/destinations/:id',
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
     const { data } = await axios.get(`/destinations/${id}`);
     res.status(200).json(data);
-  } catch (e) {
-    res.status(500).json({
-      error: e.errors,
-    });
-  }
-});
+  })
+);
 
-app.get('/flights/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
+app.get(
+  '/flights/:id',
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
     const { data } = await axios.get(`/flights/${id}`);
     res.status(200).json(data);
-  } catch (e) {
-    res.status(500).json({
-      error: e.errors,
-    });
-  }
-});
+  })
+);
 
-app.get('/aircrafttypes', async (req, res) => {
-  const { iataSub } = req.query;
-
-  try {
+app.get(
+  '/aircrafttypes',
+  catchAsync(async (req, res) => {
+    const { iataSub } = req.query;
     const { data } = await axios.get(`/aircrafttypes?iataSub=${iataSub}`);
     res.status(200).json(data);
-  } catch (e) {
-    res.status(500).json({
-      error: e.errors,
-    });
-  }
-});
+  })
+);
 
 app.listen(port, () =>
   console.log(`Server running on http://localhost:${port}`)
