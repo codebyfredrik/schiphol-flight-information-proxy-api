@@ -38,7 +38,6 @@ app.get('/flights', async (req, res) => {
       url = `/flights?fromDateTime=${fromDateTime}&page=${page}&searchDateTimeField=${searchDateTimeField}&sort=${sort}`;
     }
     const { data, lastPage } = await axios.get(url, {
-      ...axios.default,
       parse: true,
     });
 
