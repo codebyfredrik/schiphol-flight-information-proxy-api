@@ -1,8 +1,10 @@
 {
   "parser": "babel-eslint",
   "extends": [
+    "prettier",
     "airbnb"
   ],
+  "plugins": ["prettier"],
   "globals": {
     "document": false,
     "window": false,
@@ -14,7 +16,7 @@
   },
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 2017,
+    "ecmaVersion": 2018,
     "ecmaFeatures": {
       "jsx": false,
       "experimentalObjectRestSpread": true,
@@ -22,6 +24,8 @@
     }
   },
   "rules": {
+    "prettier/prettier": "error",
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "arrow-body-style": "off",
     "class-methods-use-this": "off",
     "brace-style": [

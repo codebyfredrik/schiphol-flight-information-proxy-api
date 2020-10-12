@@ -25,13 +25,7 @@ app.use(bodyParser.json());
 app.get(
   '/flights',
   catchAsync(async (req, res) => {
-    const {
-      fromDateTime,
-      page,
-      searchDateTimeField,
-      sort,
-      flightDirection = '',
-    } = req.query;
+    const { fromDateTime, page, searchDateTimeField, sort, flightDirection = '' } = req.query;
     let url;
 
     if (flightDirection === 'A' || flightDirection === 'D') {
@@ -84,6 +78,4 @@ app.get(
   })
 );
 
-app.listen(port, () =>
-  console.log(`Server running on http://localhost:${port}`)
-);
+app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
