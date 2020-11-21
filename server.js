@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import createError from 'http-errors';
 import axios from './helpers/axios';
 import { catchAsync } from './helpers/catchAsync';
 
@@ -44,6 +45,10 @@ app.get(
       parse: true,
     });
 
+    if (!data) {
+      throw createError(404, 'No flights type does not exist!');
+    }
+
     res.status(200).json({ data, lastPage });
   })
 );
@@ -53,6 +58,11 @@ app.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const { data } = await axios.get(`/airlines/${id}`);
+
+    if (!data) {
+      throw createError(404, 'This airline does not exist!');
+    }
+
     res.status(200).json(data);
   })
 );
@@ -62,6 +72,11 @@ app.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const { data } = await axios.get(`/destinations/${id}`);
+
+    if (!data) {
+      throw createError(404, 'This destination does not exist!');
+    }
+
     res.status(200).json(data);
   })
 );
@@ -71,6 +86,11 @@ app.get(
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const { data } = await axios.get(`/flights/${id}`);
+
+    if (!data) {
+      throw createError(404, 'This flight does not exist!');
+    }
+
     res.status(200).json(data);
   })
 );
@@ -80,9 +100,23 @@ app.get(
   catchAsync(async (req, res) => {
     const { iataSub } = req.query;
     const { data } = await axios.get(`/aircrafttypes?iataSub=${iataSub}`);
+
+    if (!data) {
+      throw createError(404, 'This aircraft type does not exist!');
+    }
+
     res.status(200).json(data);
   })
 );
+
+app.use((error, req, res, next) => {
+  res.status(error.status || 500).json({
+    error: {
+      status: error.status || 500,
+      message: error.message || 'Internal Server Error',
+    },
+  });
+});
 
 app.listen(port, () =>
   console.log(`Server running on http://localhost:${port}`)
